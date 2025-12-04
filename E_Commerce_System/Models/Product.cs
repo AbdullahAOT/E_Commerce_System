@@ -14,11 +14,15 @@ namespace E_Commerce_System.Models
     public class Product
     {
         public int Id { get; set; }
+        public DateTime Server_DateTime { get; set; }
+        public DateTime DateTime_UTC { get; set; }
+        public DateTime? Update_DateTime_UTC { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal Price { get; set; }
         public ProductStatus Status { get; set; }
-        public List<Order> Orders { get; set; } = new();
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Amount { get; set; }
+        public string Currency { get; set; }
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }
