@@ -1,5 +1,6 @@
 ﻿
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 
 namespace E_Commerce_System.Models
@@ -23,6 +24,7 @@ namespace E_Commerce_System.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal Amount { get; set; }
         public string Currency { get; set; }
+        [JsonIgnore]
         public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

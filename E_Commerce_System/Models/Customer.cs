@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace E_Commerce_System.Models
 {
@@ -36,6 +37,7 @@ namespace E_Commerce_System.Models
         public Gender Gender { get; set; }
         [Required]
         public DateTime Date_Of_Birth { get; set; }
+        [JsonIgnore]
         public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }
