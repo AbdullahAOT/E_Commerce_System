@@ -1,11 +1,10 @@
-﻿@using E_Commerce_System.ViewModels.Admin
-@model AdminLoginViewModel
+﻿@model E_Commerce_System.ViewModels.Customer.CustomerLoginViewModel
 
 @{
-    ViewData["Title"] = "Admin Login";
+    ViewData["Title"] = "Customer Login";
 }
 
-<h2>Admin Login</h2>
+<h2>Customer Login</h2>
 
 <form asp-action="Login" method="post">
     <div>
@@ -20,11 +19,12 @@
 
     @if (!string.IsNullOrEmpty(Model.ErrorMessage))
     {
-        <div style="color:red;">
-            @Model.ErrorMessage
-        </div>
+        <p style="color:red">@Model.ErrorMessage</p>
     }
 
     <button type="submit">Login</button>
 </form>
 
+<p>
+    <a href="/">Back to Home</a>
+</p>

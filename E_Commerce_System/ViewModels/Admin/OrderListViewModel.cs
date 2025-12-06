@@ -1,6 +1,6 @@
 ﻿using E_Commerce_System.Models;
 
-namespace E_Commerce_System.ViewModels
+namespace E_Commerce_System.ViewModels.Admin
 {
     public class OrderListViewModel
     {

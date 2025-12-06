@@ -1,7 +1,7 @@
 ﻿using E_Commerce_System.Models;
 using Microsoft.AspNetCore.Http;
 
-namespace E_Commerce_System.ViewModels
+namespace E_Commerce_System.ViewModels.Admin
 {
     public class CustomerEditViewModel
     {

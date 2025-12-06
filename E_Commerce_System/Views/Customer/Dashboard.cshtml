@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Customer Dashboard";
+}
+
+<h2>Customer Dashboard</h2>
+
+<p>Welcome, @ViewBag.CustomerName!</p>
+
+<h3>Your Orders Summary</h3>
+<ul>
+    <li>Total Orders: @ViewBag.TotalOrders</li>
+    <li>Total Amount of Orders: @ViewBag.TotalAmount JOD</li>
+</ul>
+
+<p>
+    <a asp-action="Products">Browse Products</a> |
+    <a asp-action="MyOrders">My Orders</a> |
+    <a asp-action="Logout">Logout</a>
+</p>

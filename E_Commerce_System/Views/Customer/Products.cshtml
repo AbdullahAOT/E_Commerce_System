@@ -1,27 +1,22 @@
-﻿@using E_Commerce_System.ViewModels.Admin
-@model ProductListViewModel
+﻿@model E_Commerce_System.ViewModels.Admin.ProductListViewModel
 
 @{
     ViewData["Title"] = "Products";
 }
 
-<h2>Products</h2>
+<h2>Available Products</h2>
 
 <p>
-    <a asp-action="Dashboard">Back to Dashboard</a>
-</p>
-
-<p>
-    <a asp-action="CreateProduct">Create New Product</a>
+    <a asp-action="Dashboard">Back to Dashboard</a> |
+    <a asp-action="MyOrders">My Orders</a> |
+    <a asp-action="Logout">Logout</a>
 </p>
 
 <table border="1" cellpadding="5" cellspacing="0">
     <thead>
         <tr>
-            <th>Id</th>
             <th>Name</th>
             <th>Description</th>
-            <th>Status</th>
             <th>Amount</th>
             <th>Currency</th>
             <th></th>
@@ -33,16 +28,14 @@
             foreach (var p in Model.Products)
             {
                 <tr>
-                    <td>@p.Id</td>
                     <td>@p.Name</td>
                     <td>@p.Description</td>
-                    <td>@p.Status</td>
                     <td>@p.Amount</td>
                     <td>@p.Currency</td>
                     <td>
-                        <a asp-action="EditProduct" asp-route-id="@p.Id">Edit</a> |
-                        <form asp-action="DeleteProduct" asp-route-id="@p.Id" method="post" style="display:inline">
-                            <button type="submit" onclick="return confirm('Are you sure?');">Delete</button>
+                        <form asp-action="PlaceOrder" method="post">
+                            <input type="hidden" name="productId" value="@p.Id" />
+                            <button type="submit">Order</button>
                         </form>
                     </td>
                 </tr>
@@ -50,7 +43,7 @@
         }
         else
         {
-            <tr><td colspan="7">No products found.</td></tr>
+            <tr><td colspan="5">No products available.</td></tr>
         }
     </tbody>
 </table>

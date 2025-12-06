@@ -1,10 +1,10 @@
 ﻿using E_Commerce_System.Models;
 
-namespace E_Commerce_System.ViewModels
+namespace E_Commerce_System.ViewModels.Admin
 {
-    public class CustomerListViewModel
+    public class ProductListViewModel
     {
-        public List<Customer> Customers { get; set; } = new List<Customer>();
+        public List<Product> Products { get; set; } = new List<Product>();
 
         public int PageNumber { get; set; }
         public int TotalPages { get; set; }

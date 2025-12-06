@@ -1,6 +1,6 @@
 ﻿using E_Commerce_System.DTOs;
 using E_Commerce_System.Models;
-using E_Commerce_System.ViewModels;
+using E_Commerce_System.ViewModels.Admin;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Json;
@@ -433,7 +433,9 @@ namespace E_Commerce_System.Controllers
             return RedirectToAction("Products");
         }
 
-        public async Task<IActionResult> Orders(int page = 1)
+
+
+        public async Task<IActionResult> Orders(int page = 1, int? customerId = null)
         {
             var adminId = HttpContext.Session.GetInt32("AdminId");
             if (adminId == null)
@@ -450,6 +452,7 @@ namespace E_Commerce_System.Controllers
             HttpResponseMessage response;
             try
             {
+                // Simple: get all orders from API, then filter in MVC
                 response = await client.GetAsync("api/Orders");
             }
             catch
@@ -464,8 +467,17 @@ namespace E_Commerce_System.Controllers
 
             var allOrders = await response.Content.ReadFromJsonAsync<List<Order>>() ?? new List<Order>();
 
+            // 🔍 Filter by customerId if provided
+            if (customerId.HasValue)
+            {
+                allOrders = allOrders
+                    .Where(o => o.CustomerId == customerId.Value)
+                    .ToList();
+            }
+
             var totalCount = allOrders.Count;
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
             if (page < 1) page = 1;
             if (page > totalPages && totalPages > 0) page = totalPages;
 
@@ -483,9 +495,11 @@ namespace E_Commerce_System.Controllers
                 TotalPages = totalPages
             };
 
+            // pass the search value to view so we can keep it in the box
+            ViewBag.CustomerIdFilter = customerId;
+
             return View(vm);
         }
-
 
 
 
