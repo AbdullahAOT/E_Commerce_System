@@ -1,0 +1,39 @@
+﻿@model E_Commerce_System.Models.Product
+
+@{
+    ViewData["Title"] = "Create Product";
+}
+
+<h2>Create Product</h2>
+
+<form asp-action="CreateProduct" method="post">
+    <div>
+        <label>Name:</label>
+        <input asp-for="Name" />
+    </div>
+
+    <div>
+        <label>Description:</label>
+        <input asp-for="Description" />
+    </div>
+
+    <div>
+        <label>Status:</label>
+        <select asp-for="Status" asp-items="Html.GetEnumSelectList<E_Commerce_System.Models.CustomerStatus>()"></select>
+        @* Or ProductStatus if you have separate enum *@
+    </div>
+
+    <div>
+        <label>Amount:</label>
+        <input asp-for="Amount" />
+    </div>
+
+    <div>
+        <label>Currency:</label>
+        <input asp-for="Currency" />
+    </div>
+
+    <button type="submit">Save</button>
+    <a asp-action="Products">Back to list</a>
+</form>
+

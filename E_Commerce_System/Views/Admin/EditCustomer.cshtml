@@ -1,0 +1,54 @@
+﻿@model E_Commerce_System.ViewModels.CustomerEditViewModel
+
+@{
+    ViewData["Title"] = "Edit Customer";
+}
+
+<h2>Edit Customer</h2>
+
+<form asp-action="EditCustomer" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" />
+
+    <div>
+        <label>Name:</label>
+        <input asp-for="Name" />
+    </div>
+
+    <div>
+        <label>Email:</label>
+        <input asp-for="Email" />
+    </div>
+
+    <div>
+        <label>Phone:</label>
+        <input asp-for="Phone" />
+    </div>
+
+    <div>
+        <label>Password:</label>
+        <input asp-for="Password" type="password" />
+    </div>
+
+    <div>
+        <label>Status:</label>
+        <select asp-for="Status" asp-items="Html.GetEnumSelectList<E_Commerce_System.Models.CustomerStatus>()"></select>
+    </div>
+
+    <div>
+        <label>Gender:</label>
+        <select asp-for="Gender" asp-items="Html.GetEnumSelectList<E_Commerce_System.Models.Gender>()"></select>
+    </div>
+
+    <div>
+        <label>Date Of Birth:</label>
+        <input asp-for="Date_Of_Birth" type="date" />
+    </div>
+
+    <div>
+        <label>Photo (optional):</label>
+        <input asp-for="PhotoFile" type="file" />
+    </div>
+
+    <button type="submit">Save</button>
+    <a asp-action="Customers">Back to list</a>
+</form>

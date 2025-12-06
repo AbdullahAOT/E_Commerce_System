@@ -1,0 +1,83 @@
+﻿@model E_Commerce_System.ViewModels.ProductListViewModel
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<h2>Products</h2>
+
+<p>
+    <a asp-action="CreateProduct">Create New Product</a>
+</p>
+
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Amount</th>
+            <th>Currency</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Products != null && Model.Products.Count > 0)
+        {
+            foreach (var p in Model.Products)
+            {
+                <tr>
+                    <td>@p.Id</td>
+                    <td>@p.Name</td>
+                    <td>@p.Description</td>
+                    <td>@p.Status</td>
+                    <td>@p.Amount</td>
+                    <td>@p.Currency</td>
+                    <td>
+                        <a asp-action="EditProduct" asp-route-id="@p.Id">Edit</a> |
+                        <form asp-action="DeleteProduct" asp-route-id="@p.Id" method="post" style="display:inline">
+                            <button type="submit" onclick="return confirm('Are you sure?');">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="7">No products found.</td></tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.TotalPages > 1)
+{
+    <div style="margin-top:10px;">
+        Page @Model.PageNumber of @Model.TotalPages
+        <br />
+
+        @if (Model.PageNumber > 1)
+        {
+            <a asp-action="Products" asp-route-page="@(Model.PageNumber - 1)">Previous</a>
+        }
+
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            if (i == Model.PageNumber)
+            {
+                <strong>@i</strong>
+            }
+            else
+            {
+                <a asp-action="Products" asp-route-page="@i">@i</a>
+            }
+            @:
+        }
+
+        @if (Model.PageNumber < Model.TotalPages)
+        {
+            <a asp-action="Products" asp-route-page="@(Model.PageNumber + 1)">Next</a>
+        }
+    </div>
+}
+

@@ -1,0 +1,84 @@
+﻿@model E_Commerce_System.ViewModels.CustomerListViewModel
+
+@{
+    ViewData["Title"] = "Customers";
+}
+
+<h2>Customers</h2>
+
+<p>
+    <a asp-action="Dashboard">Back to Dashboard</a>
+</p>
+
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Status</th>
+            <th>Gender</th>
+            <th>Date Of Birth</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Customers != null && Model.Customers.Count > 0)
+        {
+            foreach (var c in Model.Customers)
+            {
+                <tr>
+                    <td>@c.Id</td>
+                    <td>@c.Name</td>
+                    <td>@c.Email</td>
+                    <td>@c.Phone</td>
+                    <td>@c.Status</td>
+                    <td>@c.Gender</td>
+                    <td>@c.Date_Of_Birth.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        <a asp-action="EditCustomer" asp-route-id="@c.Id">Edit</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8">No customers found.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.TotalPages > 1)
+{
+    <div style="margin-top:10px;">
+        Page @Model.PageNumber of @Model.TotalPages
+        <br />
+
+        @if (Model.PageNumber > 1)
+        {
+            <a asp-action="Customers" asp-route-page="@(Model.PageNumber - 1)">Previous</a>
+        }
+
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            if (i == Model.PageNumber)
+            {
+                <strong>@i</strong>
+            }
+            else
+            {
+                <a asp-action="Customers" asp-route-page="@i">@i</a>
+            }
+
+            @:
+        }
+
+        @if (Model.PageNumber < Model.TotalPages)
+        {
+            <a asp-action="Customers" asp-route-page="@(Model.PageNumber + 1)">Next</a>
+        }
+    </div>
+}

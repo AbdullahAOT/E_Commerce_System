@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h2>Admin Dashboard</h2>
+
+<p>Welcome, @ViewBag.AdminName!</p>
+
+<ul>
+    <li><a asp-action="Customers">Manage Customers</a></li>
+    <li><a asp-action="Products">Manage Products</a></li>
+    <li><a asp-action="Orders">View Orders</a></li>
+</ul>
+
+<p>
+    <a asp-action="Logout">Logout</a>
+</p>

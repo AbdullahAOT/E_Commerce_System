@@ -115,5 +115,17 @@ namespace E_Commerce_System.Controllers.Api
             await _context.SaveChangesAsync();
             return NoContent();
         }
+        [HttpGet("by-customer/{customerId}")]
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrdersByCustomer(int customerId)
+        {
+            var orders = await _context.Orders
+                .Include(o => o.Customer)
+                .Include(o => o.Product)
+                .Where(o => o.CustomerId == customerId)
+                .ToListAsync();
+
+            return Ok(orders);
+        }
+
     }
 }
