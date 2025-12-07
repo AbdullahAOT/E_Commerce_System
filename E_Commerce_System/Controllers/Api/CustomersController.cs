@@ -2,6 +2,7 @@
 using E_Commerce_System.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace E_Commerce_System.Controllers.Api
 {
@@ -89,5 +90,55 @@ namespace E_Commerce_System.Controllers.Api
             await _context.SaveChangesAsync();
             return NoContent();
         }
+        [HttpGet("{id}/photo")]
+        public async Task<IActionResult> GetPhoto(int id)
+        {
+            var customer = await _context.Customers.FindAsync(id);
+            if (customer == null || customer.Photo == null || customer.Photo.Length == 0)
+            {
+                return NotFound();
+            }
+
+            return File(customer.Photo, "image/jpeg");
+        }
+        [HttpPost("{id}/profile")]
+        public async Task<IActionResult> UpdateProfile(
+    int id,
+    [FromForm] string? newPassword,
+    [FromForm] IFormFile? photoFile)
+        {
+            var customer = await _context.Customers.FindAsync(id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            bool updated = false;
+
+            if (!string.IsNullOrWhiteSpace(newPassword))
+            {
+                customer.Password = newPassword;
+                customer.Update_DateTime_UTC = DateTime.UtcNow;
+                updated = true;
+            }
+
+            if (photoFile != null && photoFile.Length > 0)
+            {
+                using var ms = new MemoryStream();
+                await photoFile.CopyToAsync(ms);
+                customer.Photo = ms.ToArray();
+                customer.Update_DateTime_UTC = DateTime.UtcNow;
+                updated = true;
+            }
+
+            if (!updated)
+            {
+                return BadRequest("No changes provided.");
+            }
+
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
     }
 }

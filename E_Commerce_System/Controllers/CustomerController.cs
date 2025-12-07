@@ -4,6 +4,7 @@ using E_Commerce_System.Models;
 using E_Commerce_System.ViewModels.Admin;
 using E_Commerce_System.ViewModels.Customer;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
 
 namespace E_Commerce_System.Controllers
 {
@@ -15,6 +16,80 @@ namespace E_Commerce_System.Controllers
         {
             _httpClientFactory = httpClientFactory;
         }
+
+        [HttpGet]
+        public IActionResult EditProfile()
+        {
+            var customerId = HttpContext.Session.GetInt32("CustomerId");
+            if (customerId == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var model = new CustomerProfileViewModel
+            {
+                Name = HttpContext.Session.GetString("CustomerName") ?? string.Empty,
+                Email = HttpContext.Session.GetString("CustomerEmail") ?? string.Empty
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditProfile(CustomerProfileViewModel model)
+        {
+            var customerId = HttpContext.Session.GetInt32("CustomerId");
+            if (customerId == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.NewPassword) &&
+                model.NewPassword != model.ConfirmPassword)
+            {
+                model.ErrorMessage = "New password and confirmation do not match.";
+                return View(model);
+            }
+
+            var client = _httpClientFactory.CreateClient();
+            var baseUrl = $"{Request.Scheme}://{Request.Host.Value}/";
+            client.BaseAddress = new Uri(baseUrl);
+
+            var form = new MultipartFormDataContent();
+
+            if (!string.IsNullOrWhiteSpace(model.NewPassword))
+            {
+                form.Add(new StringContent(model.NewPassword), "newPassword");
+            }
+
+            if (model.Photo != null && model.Photo.Length > 0)
+            {
+                var streamContent = new StreamContent(model.Photo.OpenReadStream());
+                streamContent.Headers.ContentType =
+                    new MediaTypeHeaderValue(model.Photo.ContentType);
+                form.Add(streamContent, "photoFile", model.Photo.FileName);
+            }
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.PostAsync($"api/Customers/{customerId.Value}/profile", form);
+            }
+            catch
+            {
+                model.ErrorMessage = "Could not connect to the server.";
+                return View(model);
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                model.ErrorMessage = "Could not update your profile.";
+                return View(model);
+            }
+
+            return RedirectToAction("Dashboard");
+        }
+
 
 
         [HttpGet]
