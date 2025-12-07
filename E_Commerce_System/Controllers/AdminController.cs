@@ -77,7 +77,7 @@ namespace E_Commerce_System.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Login");
         }
-        public async Task<IActionResult> Customers(int page = 1)
+        public async Task<IActionResult> Customers(int page = 1, int? searchId = null)
         {
             var adminId = HttpContext.Session.GetInt32("AdminId");
             if (adminId == null)
@@ -91,36 +91,54 @@ namespace E_Commerce_System.Controllers
             var baseUrl = $"{Request.Scheme}://{Request.Host.Value}/";
             client.BaseAddress = new Uri(baseUrl);
 
-            HttpResponseMessage response;
-            try
+            ViewBag.SearchId = searchId;
+
+            if (searchId.HasValue)
             {
-                response = await client.GetAsync("api/customers");
-            }
-            catch (Exception)
-            {
-                return View(new CustomerListViewModel
+                var response = await client.GetAsync($"api/Customers/{searchId.Value}");
+
+                if (!response.IsSuccessStatusCode)
                 {
-                    Customers = new List<Customer>(),
-                    PageNumber = page,
+                    var emptyVm = new CustomerListViewModel
+                    {
+                        Customers = new List<Customer>(),
+                        PageNumber = 1,
+                        PageSize = pageSize,
+                        TotalCount = 0,
+                        TotalPages = 0
+                    };
+
+                    return View(emptyVm);
+                }
+
+                var customer = await response.Content.ReadFromJsonAsync<Customer>();
+
+                var list = new List<Customer>();
+                if (customer != null)
+                {
+                    list.Add(customer);
+                }
+
+                var singleVm = new CustomerListViewModel
+                {
+                    Customers = list,
+                    PageNumber = 1,
                     PageSize = pageSize,
-                    TotalCount = 0,
-                    TotalPages = 0
-                });
+                    TotalCount = list.Count,
+                    TotalPages = 1
+                };
+
+                return View(singleVm);
             }
 
-            if (!response.IsSuccessStatusCode)
+            var allResponse = await client.GetAsync("api/Customers");
+            if (!allResponse.IsSuccessStatusCode)
             {
-                return View(new CustomerListViewModel
-                {
-                    Customers = new List<Customer>(),
-                    PageNumber = page,
-                    PageSize = pageSize,
-                    TotalCount = 0,
-                    TotalPages = 0
-                });
+                return View(new CustomerListViewModel());
             }
 
-            var allCustomers = await response.Content.ReadFromJsonAsync<List<Customer>>() ?? new List<Customer>();
+            var allCustomers = await allResponse.Content.ReadFromJsonAsync<List<Customer>>()
+                               ?? new List<Customer>();
 
             var totalCount = allCustomers.Count;
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
@@ -128,21 +146,21 @@ namespace E_Commerce_System.Controllers
             if (page < 1) page = 1;
             if (page > totalPages && totalPages > 0) page = totalPages;
 
-            var customersPage = allCustomers
+            var pageItems = allCustomers
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
 
-            var viewModel = new CustomerListViewModel
+            var vm = new CustomerListViewModel
             {
-                Customers = customersPage,
+                Customers = pageItems,
                 PageNumber = page,
                 PageSize = pageSize,
                 TotalCount = totalCount,
                 TotalPages = totalPages
             };
 
-            return View(viewModel);
+            return View(vm);
         }
         [HttpGet]
         public async Task<IActionResult> EditCustomer(int id)
@@ -385,7 +403,6 @@ namespace E_Commerce_System.Controllers
             var baseUrl = $"{Request.Scheme}://{Request.Host.Value}/";
             client.BaseAddress = new Uri(baseUrl);
 
-            // Get existing to keep audit fields
             var existingResponse = await client.GetAsync($"api/Products/{model.Id}");
             if (!existingResponse.IsSuccessStatusCode)
             {
@@ -429,7 +446,6 @@ namespace E_Commerce_System.Controllers
 
             var response = await client.DeleteAsync($"api/Products/{id}");
 
-            // even if it fails silently, redirect back to list
             return RedirectToAction("Products");
         }
 
@@ -452,7 +468,6 @@ namespace E_Commerce_System.Controllers
             HttpResponseMessage response;
             try
             {
-                // Simple: get all orders from API, then filter in MVC
                 response = await client.GetAsync("api/Orders");
             }
             catch
@@ -467,7 +482,6 @@ namespace E_Commerce_System.Controllers
 
             var allOrders = await response.Content.ReadFromJsonAsync<List<Order>>() ?? new List<Order>();
 
-            // 🔍 Filter by customerId if provided
             if (customerId.HasValue)
             {
                 allOrders = allOrders
@@ -495,11 +509,37 @@ namespace E_Commerce_System.Controllers
                 TotalPages = totalPages
             };
 
-            // pass the search value to view so we can keep it in the box
             ViewBag.CustomerIdFilter = customerId;
 
             return View(vm);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteCustomerPermanently(int id, int page = 1)
+        {
+            var adminId = HttpContext.Session.GetInt32("AdminId");
+            if (adminId == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var client = _httpClientFactory.CreateClient();
+            var baseUrl = $"{Request.Scheme}://{Request.Host.Value}/";
+            client.BaseAddress = new Uri(baseUrl);
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.DeleteAsync($"api/Customers/{id}");
+            }
+            catch
+            {
+                return RedirectToAction("Customers", new { page });
+            }
+
+            return RedirectToAction("Customers", new { page });
+        }
+
 
     }
 }

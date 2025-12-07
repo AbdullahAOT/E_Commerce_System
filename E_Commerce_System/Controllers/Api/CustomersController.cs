@@ -16,6 +16,8 @@ namespace E_Commerce_System.Controllers.Api
             _context = context;
         }
 
+
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
         {

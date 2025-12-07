@@ -2,7 +2,7 @@
 using E_Commerce_System.DTOs;
 using E_Commerce_System.Models;
 using E_Commerce_System.ViewModels.Admin;
-using E_Commerce_System.ViewModels.Customer; 
+using E_Commerce_System.ViewModels.Customer;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_Commerce_System.Controllers
@@ -14,6 +14,70 @@ namespace E_Commerce_System.Controllers
         public CustomerController(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
+        }
+
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View(new CustomerSignupViewModel());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(CustomerSignupViewModel model)
+        {
+            if (!ModelState.IsValid || !model.DateOfBirth.HasValue)
+            {
+                model.ErrorMessage = "Please fill all required fields correctly.";
+                return View(model);
+            }
+
+            var client = _httpClientFactory.CreateClient();
+            var baseUrl = $"{Request.Scheme}://{Request.Host.Value}/";
+            client.BaseAddress = new Uri(baseUrl);
+
+            var request = new CustomerRegisterRequest
+            {
+                Name = model.Name,
+                Email = model.Email,
+                Phone = model.Phone,
+                Password = model.Password,
+                Gender = model.Gender,
+                DateOfBirth = model.DateOfBirth.Value
+            };
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.PostAsJsonAsync("api/CustomerAuthorization/register", request);
+            }
+            catch
+            {
+                model.ErrorMessage = "Could not connect to the server.";
+                return View(model);
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var apiMessage = await response.Content.ReadAsStringAsync();
+                model.ErrorMessage = string.IsNullOrWhiteSpace(apiMessage)
+                    ? "Registration failed. Please check your data."
+                    : apiMessage;
+                return View(model);
+            }
+
+            var registerResponse = await response.Content.ReadFromJsonAsync<CustomerLoginResponse>();
+            if (registerResponse == null || !registerResponse.Success)
+            {
+                model.ErrorMessage = "Registration failed.";
+                return View(model);
+            }
+
+            HttpContext.Session.SetInt32("CustomerId", registerResponse.Id);
+            HttpContext.Session.SetString("CustomerName", registerResponse.Name);
+            HttpContext.Session.SetString("CustomerEmail", registerResponse.Email);
+
+            return RedirectToAction("Dashboard");
         }
 
 
@@ -66,6 +130,7 @@ namespace E_Commerce_System.Controllers
                 model.ErrorMessage = "Invalid email or password.";
                 return View(model);
             }
+
             HttpContext.Session.SetInt32("CustomerId", loginResponse.Id);
             HttpContext.Session.SetString("CustomerName", loginResponse.Name);
             HttpContext.Session.SetString("CustomerEmail", loginResponse.Email);
@@ -121,6 +186,7 @@ namespace E_Commerce_System.Controllers
 
             return View();
         }
+
 
         public async Task<IActionResult> Products(int page = 1)
         {
@@ -223,6 +289,7 @@ namespace E_Commerce_System.Controllers
             return RedirectToAction("MyOrders");
         }
 
+
         public async Task<IActionResult> MyOrders(int page = 1)
         {
             var customerId = HttpContext.Session.GetInt32("CustomerId");
@@ -276,6 +343,7 @@ namespace E_Commerce_System.Controllers
 
             return View(vm);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> CancelOrder(int id)
