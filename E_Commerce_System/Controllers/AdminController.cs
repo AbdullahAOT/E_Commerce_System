@@ -501,7 +501,5 @@ namespace E_Commerce_System.Controllers
             return View(vm);
         }
 
-
-
     }
 }
