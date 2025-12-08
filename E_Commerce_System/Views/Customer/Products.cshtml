@@ -4,11 +4,20 @@
     ViewData["Title"] = "Products";
 }
 
+<style>
+    /* Ensure My Orders outline button shows white text on hover/focus like other primary buttons */
+    .my-orders-btn:hover,
+    .my-orders-btn:focus {
+        color: #fff !important;
+        text-decoration: none;
+    }
+</style>
+
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="m-0">Available Products</h2>
     <div>
         <a class="btn btn-secondary me-2" asp-action="Dashboard">Back to Dashboard</a>
-        <a class="btn btn-outline-primary" asp-action="MyOrders">My Orders</a>
+        <a class="btn btn-outline-primary my-orders-btn" asp-action="MyOrders">My Orders</a>
     </div>
 </div>
 
@@ -21,7 +30,7 @@
                 <th>Description</th>
                 <th style="width:110px">Amount</th>
                 <th style="width:90px">Currency</th>
-                <th style="width:120px"></th>
+                <th style="width:120px">Actions</th>
             </tr>
         </thead>
         <tbody>

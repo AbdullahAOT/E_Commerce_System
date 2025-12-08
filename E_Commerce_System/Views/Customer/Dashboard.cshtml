@@ -5,6 +5,17 @@
     var customerId = Context.Session.GetInt32("CustomerId");
 }
 
+<style>
+    /* Make "My Orders" outline button show white text and info background on hover/focus like other buttons */
+    .my-orders-btn:hover,
+    .my-orders-btn:focus {
+        color: #fff !important;
+        background-color: var(--bs-info) !important;
+        border-color: var(--bs-info) !important;
+        text-decoration: none;
+    }
+</style>
+
 <div class="row">
     <div class="col-md-3 text-center">
         @if (customerId.HasValue)
@@ -31,7 +42,7 @@
         <div class="mt-3">
             <a class="btn btn-outline-secondary me-2" asp-action="EditProfile">Edit Profile</a>
             <a class="btn btn-outline-primary me-2" asp-action="Products">Browse Products</a>
-            <a class="btn btn-outline-info me-2" asp-action="MyOrders">My Orders</a>
+            <a class="btn btn-outline-info me-2 my-orders-btn" asp-action="MyOrders">My Orders</a>
             <a class="btn btn-danger" asp-action="Logout">Logout</a>
         </div>
     </div>

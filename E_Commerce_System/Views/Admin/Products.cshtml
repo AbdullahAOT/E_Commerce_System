@@ -25,7 +25,7 @@
                         <th>Status</th>
                         <th>Amount</th>
                         <th>Currency</th>
-                        <th></th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -52,10 +52,12 @@
                                 <td>@p.Amount</td>
                                 <td>@p.Currency</td>
                                 <td>
-                                    <a class="btn btn-sm btn-outline-primary me-1" asp-action="EditProduct" asp-route-id="@p.Id">Edit</a>
-                                    <form asp-action="DeleteProduct" asp-route-id="@p.Id" method="post" style="display:inline">
-                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?');">Delete</button>
-                                    </form>
+                                    <div class="d-flex align-items-center flex-nowrap gap-1">
+                                        <a class="btn btn-sm btn-outline-primary" asp-action="EditProduct" asp-route-id="@p.Id">Edit</a>
+                                        <form asp-action="DeleteProduct" asp-route-id="@p.Id" method="post" class="m-0">
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?');">Delete</button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         }
