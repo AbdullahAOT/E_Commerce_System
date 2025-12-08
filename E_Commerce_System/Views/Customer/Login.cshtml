@@ -4,33 +4,37 @@
     ViewData["Title"] = "Customer Login";
 }
 
-<h2>Customer Login</h2>
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <h2 class="mb-3">Customer Login</h2>
 
-<form asp-action="Login" method="post">
-    <div>
-        <label>Email:</label>
-        <input asp-for="Email" />
+        <form asp-action="Login" method="post" novalidate>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label">Password</label>
+                <input asp-for="Password" type="password" class="form-control" />
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger" role="alert">@Model.ErrorMessage</div>
+            }
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+        </form>
+
+        <div class="mt-3">
+            <span>Don't have an account? <a asp-action="Register">Register here</a></span>
+        </div>
+
+        <div class="mt-2">
+            <a asp-controller="Home" asp-action="Index">Back to Home</a>
+        </div>
     </div>
-
-    <div>
-        <label>Password:</label>
-        <input asp-for="Password" type="password" />
-    </div>
-
-    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
-    {
-        <p style="color:red">@Model.ErrorMessage</p>
-    }
-
-    <button type="submit">Login</button>
-</form>
-
-<p>
-    Don't have an account?
-    <a asp-action="Register">Register here</a>
-</p>
-
-
-<p>
-    <a href="/">Back to Home</a>
-</p>
+</div>

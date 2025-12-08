@@ -5,32 +5,34 @@
     var customerId = Context.Session.GetInt32("CustomerId");
 }
 
-<h2>Customer Dashboard</h2>
-
-<p>Welcome, @ViewBag.CustomerName!</p>
-
-<h2>Welcome, @ViewBag.CustomerName</h2>
-
-@if (customerId.HasValue)
-{
-    <div style="margin-bottom:15px;">
-        <img src="/api/Customers/@customerId.Value/photo"
-             alt="Profile photo"
-             style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:1px solid #ccc;"
-             onerror="this.style.display='none';" />
+<div class="row">
+    <div class="col-md-3 text-center">
+        @if (customerId.HasValue)
+        {
+            <img src="/api/Customers/@customerId.Value/photo"
+                 alt="Profile photo"
+                 class="rounded-circle img-thumbnail"
+                 style="width:140px;height:140px;object-fit:cover;"
+                 onerror="this.style.display='none';" />
+        }
     </div>
-}
 
+    <div class="col-md-9">
+        <h2>Welcome, @ViewBag.CustomerName</h2>
 
-<h3>Your Orders Summary</h3>
-<ul>
-    <li>Total Orders: @ViewBag.TotalOrders</li>
-    <li>Total Amount of Orders: @ViewBag.TotalAmount JOD</li>
-</ul>
+        <div class="mt-3">
+            <h5>Your Orders Summary</h5>
+            <ul class="list-unstyled">
+                <li>Total Orders: <strong>@ViewBag.TotalOrders</strong></li>
+                <li>Total Amount of Orders: <strong>@(ViewBag.TotalAmount) JOD</strong></li>
+            </ul>
+        </div>
 
-<p>
-    <a asp-action="EditProfile">Edit Profile</a> |
-    <a asp-action="Products">Browse Products</a> |
-    <a asp-action="MyOrders">My Orders</a> |
-    <a asp-action="Logout">Logout</a>
-</p>
+        <div class="mt-3">
+            <a class="btn btn-outline-secondary me-2" asp-action="EditProfile">Edit Profile</a>
+            <a class="btn btn-outline-primary me-2" asp-action="Products">Browse Products</a>
+            <a class="btn btn-outline-info me-2" asp-action="MyOrders">My Orders</a>
+            <a class="btn btn-danger" asp-action="Logout">Logout</a>
+        </div>
+    </div>
+</div>

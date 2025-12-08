@@ -6,14 +6,13 @@
 
 <h2>My Orders</h2>
 
-<p>
-    <a asp-action="Dashboard">Back to Dashboard</a> |
-    <a asp-action="Products">Browse Products</a> |
-    <a asp-action="Logout">Logout</a>
-</p>
+<div class="mb-3">
+    <a class="btn btn-secondary me-2" asp-action="Dashboard">Back to Dashboard</a>
+    <a class="btn btn-outline-primary" asp-action="Products">Browse Products</a>
+</div>
 
-<table border="1" cellpadding="5" cellspacing="0">
-    <thead>
+<table class="table table-bordered">
+    <thead class="table-light">
         <tr>
             <th>Order Id</th>
             <th>Product</th>
@@ -35,11 +34,9 @@
                     <td>@o.Currency</td>
                     <td>@o.Server_DateTime</td>
                     <td>
-                        <form asp-action="CancelOrder" method="post">
+                        <form asp-action="CancelOrder" method="post" onsubmit="return confirm('Cancel this order?');">
                             <input type="hidden" name="id" value="@o.Id" />
-                            <button type="submit" onclick="return confirm('Cancel this order?');">
-                                Cancel
-                            </button>
+                            <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
                         </form>
                     </td>
                 </tr>
@@ -47,38 +44,35 @@
         }
         else
         {
-            <tr><td colspan="6">You have no orders.</td></tr>
+            <tr><td colspan="6" class="text-center">You have no orders.</td></tr>
         }
     </tbody>
 </table>
 
 @if (Model.TotalPages > 1)
 {
-    <div style="margin-top:10px;">
-        Page @Model.PageNumber of @Model.TotalPages
-        <br />
-
-        @if (Model.PageNumber > 1)
-        {
-            <a asp-action="MyOrders" asp-route-page="@(Model.PageNumber - 1)">Previous</a>
-        }
-
-        @for (int i = 1; i <= Model.TotalPages; i++)
-        {
-            if (i == Model.PageNumber)
+    <nav aria-label="Orders pagination">
+        <ul class="pagination">
+            @if (Model.PageNumber > 1)
             {
-                <strong>@i</strong>
+                <li class="page-item">
+                    <a class="page-link" asp-action="MyOrders" asp-route-page="@(Model.PageNumber - 1)">Previous</a>
+                </li>
             }
-            else
-            {
-                <a asp-action="MyOrders" asp-route-page="@i">@i</a>
-            }
-            @:
-        }
 
-        @if (Model.PageNumber < Model.TotalPages)
-        {
-            <a asp-action="MyOrders" asp-route-page="@(Model.PageNumber + 1)">Next</a>
-        }
-    </div>
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" asp-action="MyOrders" asp-route-page="@i">@i</a>
+                </li>
+            }
+
+            @if (Model.PageNumber < Model.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="MyOrders" asp-route-page="@(Model.PageNumber + 1)">Next</a>
+                </li>
+            }
+        </ul>
+    </nav>
 }

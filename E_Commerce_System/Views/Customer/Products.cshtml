@@ -6,14 +6,13 @@
 
 <h2>Available Products</h2>
 
-<p>
-    <a asp-action="Dashboard">Back to Dashboard</a> |
-    <a asp-action="MyOrders">My Orders</a> |
-    <a asp-action="Logout">Logout</a>
-</p>
+<div class="mb-3">
+    <a class="btn btn-secondary me-2" asp-action="Dashboard">Back to Dashboard</a>
+    <a class="btn btn-outline-primary" asp-action="MyOrders">My Orders</a>
+</div>
 
-<table border="1" cellpadding="5" cellspacing="0">
-    <thead>
+<table class="table table-bordered table-striped">
+    <thead class="table-light">
         <tr>
             <th>Name</th>
             <th>Description</th>
@@ -33,9 +32,9 @@
                     <td>@p.Amount</td>
                     <td>@p.Currency</td>
                     <td>
-                        <form asp-action="PlaceOrder" method="post">
+                        <form asp-action="PlaceOrder" method="post" class="d-inline">
                             <input type="hidden" name="productId" value="@p.Id" />
-                            <button type="submit">Order</button>
+                            <button type="submit" class="btn btn-sm btn-primary">Order</button>
                         </form>
                     </td>
                 </tr>
@@ -43,38 +42,35 @@
         }
         else
         {
-            <tr><td colspan="5">No products available.</td></tr>
+            <tr><td colspan="5" class="text-center">No products available.</td></tr>
         }
     </tbody>
 </table>
 
 @if (Model.TotalPages > 1)
 {
-    <div style="margin-top:10px;">
-        Page @Model.PageNumber of @Model.TotalPages
-        <br />
-
-        @if (Model.PageNumber > 1)
-        {
-            <a asp-action="Products" asp-route-page="@(Model.PageNumber - 1)">Previous</a>
-        }
-
-        @for (int i = 1; i <= Model.TotalPages; i++)
-        {
-            if (i == Model.PageNumber)
+    <nav aria-label="Product pagination">
+        <ul class="pagination">
+            @if (Model.PageNumber > 1)
             {
-                <strong>@i</strong>
+                <li class="page-item">
+                    <a class="page-link" asp-action="Products" asp-route-page="@(Model.PageNumber - 1)">Previous</a>
+                </li>
             }
-            else
-            {
-                <a asp-action="Products" asp-route-page="@i">@i</a>
-            }
-            @:
-        }
 
-        @if (Model.PageNumber < Model.TotalPages)
-        {
-            <a asp-action="Products" asp-route-page="@(Model.PageNumber + 1)">Next</a>
-        }
-    </div>
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" asp-action="Products" asp-route-page="@i">@i</a>
+                </li>
+            }
+
+            @if (Model.PageNumber < Model.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="Products" asp-route-page="@(Model.PageNumber + 1)">Next</a>
+                </li>
+            }
+        </ul>
+    </nav>
 }
