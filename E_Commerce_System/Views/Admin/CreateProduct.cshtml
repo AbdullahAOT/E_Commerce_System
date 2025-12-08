@@ -4,36 +4,48 @@
     ViewData["Title"] = "Create Product";
 }
 
-<h2>Create Product</h2>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2>Create Product</h2>
 
-<form asp-action="CreateProduct" method="post">
-    <div>
-        <label>Name:</label>
-        <input asp-for="Name" />
+        <form asp-action="CreateProduct" method="post" enctype="multipart/form-data" novalidate>
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Name</label>
+                <input asp-for="Name" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Description</label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Status" class="form-label">Status</label>
+                <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<E_Commerce_System.Models.ProductStatus>()"></select>
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label asp-for="Amount" class="form-label">Amount</label>
+                    <input asp-for="Amount" class="form-control" />
+                </div>
+
+                <div class="mb-3 col-md-6">
+                    <label asp-for="Currency" class="form-label">Currency</label>
+                    <input asp-for="Currency" class="form-control" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Product Photo (optional)</label>
+                <input type="file" name="PhotoFile" class="form-control" accept="image/*" />
+            </div>
+
+            <div class="d-flex">
+                <button type="submit" class="btn btn-primary me-2">Save</button>
+                <a class="btn btn-secondary" asp-action="Products">Back to list</a>
+            </div>
+        </form>
     </div>
-
-    <div>
-        <label>Description:</label>
-        <input asp-for="Description" />
-    </div>
-
-    <div>
-        <label>Status:</label>
-        <select asp-for="Status" asp-items="Html.GetEnumSelectList<E_Commerce_System.Models.CustomerStatus>()"></select>
-        @* Or ProductStatus if you have separate enum *@
-    </div>
-
-    <div>
-        <label>Amount:</label>
-        <input asp-for="Amount" />
-    </div>
-
-    <div>
-        <label>Currency:</label>
-        <input asp-for="Currency" />
-    </div>
-
-    <button type="submit">Save</button>
-    <a asp-action="Products">Back to list</a>
-</form>
+</div>
 

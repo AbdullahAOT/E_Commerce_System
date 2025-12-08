@@ -4,48 +4,70 @@
     ViewData["Title"] = "Products";
 }
 
-<h2>Available Products</h2>
-
-<div class="mb-3">
-    <a class="btn btn-secondary me-2" asp-action="Dashboard">Back to Dashboard</a>
-    <a class="btn btn-outline-primary" asp-action="MyOrders">My Orders</a>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="m-0">Available Products</h2>
+    <div>
+        <a class="btn btn-secondary me-2" asp-action="Dashboard">Back to Dashboard</a>
+        <a class="btn btn-outline-primary" asp-action="MyOrders">My Orders</a>
+    </div>
 </div>
 
-<table class="table table-bordered table-striped">
-    <thead class="table-light">
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Amount</th>
-            <th>Currency</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model.Products != null && Model.Products.Count > 0)
-        {
-            foreach (var p in Model.Products)
+<div class="table-responsive">
+    <table class="table table-bordered table-striped align-middle">
+        <thead class="table-light">
+            <tr>
+                <th style="width:120px">Photo</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th style="width:110px">Amount</th>
+                <th style="width:90px">Currency</th>
+                <th style="width:120px"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Products != null && Model.Products.Count > 0)
             {
-                <tr>
-                    <td>@p.Name</td>
-                    <td>@p.Description</td>
-                    <td>@p.Amount</td>
-                    <td>@p.Currency</td>
-                    <td>
-                        <form asp-action="PlaceOrder" method="post" class="d-inline">
-                            <input type="hidden" name="productId" value="@p.Id" />
-                            <button type="submit" class="btn btn-sm btn-primary">Order</button>
-                        </form>
-                    </td>
-                </tr>
+                foreach (var p in Model.Products)
+                {
+                    <tr>
+                        <td class="text-center">
+                            @if (p.Photo != null && p.Photo.Length > 0 && !string.IsNullOrEmpty(p.PhotoContentType))
+                            {
+                                var src = $"data:{p.PhotoContentType};base64,{System.Convert.ToBase64String(p.Photo)}";
+                                <img src="@src"
+                                     alt="@p.Name"
+                                     class="img-fluid img-thumbnail"
+                                     style="max-width:100px; max-height:100px; object-fit:cover;" loading="lazy" />
+                            }
+                            else
+                            {
+                                <!-- optional placeholder image (wwwroot/images/no-image.png) or fallback text -->
+                                <img src="~/images/no-image.png" alt="No image" class="img-fluid img-thumbnail"
+                                     style="max-width:100px; max-height:100px; object-fit:cover;" onerror="this.style.display='none';" />
+                                <div class="small text-muted mt-1">No image</div>
+                            }
+                        </td>
+
+                        <td>@p.Name</td>
+                        <td class="text-truncate" style="max-width:420px;">@p.Description</td>
+                        <td>@p.Amount.ToString("0.00")</td>
+                        <td>@p.Currency</td>
+                        <td>
+                            <form asp-action="PlaceOrder" method="post" class="d-inline">
+                                <input type="hidden" name="productId" value="@p.Id" />
+                                <button type="submit" class="btn btn-sm btn-primary">Order</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
             }
-        }
-        else
-        {
-            <tr><td colspan="5" class="text-center">No products available.</td></tr>
-        }
-    </tbody>
-</table>
+            else
+            {
+                <tr><td colspan="6" class="text-center">No products available.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 @if (Model.TotalPages > 1)
 {

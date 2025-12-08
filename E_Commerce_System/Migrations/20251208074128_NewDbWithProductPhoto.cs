@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace E_Commerce_System.Migrations
 {
     /// <inheritdoc />
-    public partial class First_Database_Creation : Migration
+    public partial class NewDbWithProductPhoto : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -63,7 +63,9 @@ namespace E_Commerce_System.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Currency = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Currency = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Photo = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    PhotoContentType = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_Commerce_System.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251203101907_First_Database_Creation")]
-    partial class First_Database_Creation
+    [Migration("20251208074128_NewDbWithProductPhoto")]
+    partial class NewDbWithProductPhoto
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -163,6 +163,12 @@ namespace E_Commerce_System.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("Photo")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("PhotoContentType")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Server_DateTime")

@@ -162,6 +162,12 @@ namespace E_Commerce_System.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<byte[]>("Photo")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("PhotoContentType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Server_DateTime")
                         .HasColumnType("datetime2");
 

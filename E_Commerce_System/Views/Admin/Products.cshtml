@@ -14,45 +14,59 @@
             <a class="btn btn-primary" asp-action="CreateProduct">Create New Product</a>
         </div>
 
-        <table class="table table-bordered table-striped">
-            <thead class="table-light">
-                <tr>
-                    <th>Id</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Status</th>
-                    <th>Amount</th>
-                    <th>Currency</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.Products != null && Model.Products.Count > 0)
-                {
-                    foreach (var p in Model.Products)
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:90px">Photo</th>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Amount</th>
+                        <th>Currency</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Products != null && Model.Products.Count > 0)
                     {
-                        <tr>
-                            <td>@p.Id</td>
-                            <td>@p.Name</td>
-                            <td>@p.Description</td>
-                            <td>@p.Status</td>
-                            <td>@p.Amount</td>
-                            <td>@p.Currency</td>
-                            <td>
-                                <a class="btn btn-sm btn-outline-primary me-1" asp-action="EditProduct" asp-route-id="@p.Id">Edit</a>
-                                <form asp-action="DeleteProduct" asp-route-id="@p.Id" method="post" style="display:inline">
-                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?');">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
+                        foreach (var p in Model.Products)
+                        {
+                            <tr>
+                                <td>
+                                    @if (p.Photo != null && p.Photo.Length > 0)
+                                    {
+                                        var src = $"data:{p.PhotoContentType};base64,{System.Convert.ToBase64String(p.Photo)}";
+                                        <img src="@src" class="img-thumbnail" style="width:64px;height:64px;object-fit:cover;" />
+                                    }
+                                    else
+                                    {
+                                        <div class="text-muted small">No image</div>
+                                    }
+                                </td>
+                                <td>@p.Id</td>
+                                <td>@p.Name</td>
+                                <td>@p.Description</td>
+                                <td>@p.Status</td>
+                                <td>@p.Amount</td>
+                                <td>@p.Currency</td>
+                                <td>
+                                    <a class="btn btn-sm btn-outline-primary me-1" asp-action="EditProduct" asp-route-id="@p.Id">Edit</a>
+                                    <form asp-action="DeleteProduct" asp-route-id="@p.Id" method="post" style="display:inline">
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?');">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
                     }
-                }
-                else
-                {
-                    <tr><td colspan="7" class="text-center">No products found.</td></tr>
-                }
-            </tbody>
-        </table>
+                    else
+                    {
+                        <tr><td colspan="8" class="text-center">No products found.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
 
         @if (Model.TotalPages > 1)
         {

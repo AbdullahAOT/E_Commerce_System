@@ -4,38 +4,62 @@
     ViewData["Title"] = "Edit Product";
 }
 
-<h2>Edit Product</h2>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2>Edit Product</h2>
 
-<form asp-action="EditProduct" method="post">
-    <input type="hidden" asp-for="Id" />
+        <form asp-action="EditProduct" method="post" enctype="multipart/form-data" novalidate>
+            <input type="hidden" asp-for="Id" />
 
-    <div>
-        <label>Name:</label>
-        <input asp-for="Name" />
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Name</label>
+                <input asp-for="Name" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Description</label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Status" class="form-label">Status</label>
+                <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<E_Commerce_System.Models.ProductStatus>()"></select>
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label asp-for="Amount" class="form-label">Amount</label>
+                    <input asp-for="Amount" class="form-control" />
+                </div>
+
+                <div class="mb-3 col-md-6">
+                    <label asp-for="Currency" class="form-label">Currency</label>
+                    <input asp-for="Currency" class="form-control" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Current Photo</label>
+                @if (Model.Photo != null && Model.Photo.Length > 0)
+                {
+                    var imgSrc = $"data:{Model.PhotoContentType};base64,{System.Convert.ToBase64String(Model.Photo)}";
+                    <div>
+                        <img src="@imgSrc" class="img-thumbnail mb-2" style="max-width:200px; max-height:200px;" />
+                    </div>
+                }
+                else
+                {
+                    <div class="text-muted mb-2">No photo uploaded.</div>
+                }
+                <label class="form-label">Replace Photo (optional)</label>
+                <input type="file" name="PhotoFile" class="form-control" accept="image/*" />
+            </div>
+
+            <div class="d-flex">
+                <button type="submit" class="btn btn-primary me-2">Save</button>
+                <a class="btn btn-secondary" asp-action="Products">Back to list</a>
+            </div>
+        </form>
     </div>
-
-    <div>
-        <label>Description:</label>
-        <input asp-for="Description" />
-    </div>
-
-    <div>
-        <label>Status:</label>
-        <select asp-for="Status" asp-items="Html.GetEnumSelectList<E_Commerce_System.Models.CustomerStatus>()"></select>
-        @* Or ProductStatus *@
-    </div>
-
-    <div>
-        <label>Amount:</label>
-        <input asp-for="Amount" />
-    </div>
-
-    <div>
-        <label>Currency:</label>
-        <input asp-for="Currency" />
-    </div>
-
-    <button type="submit">Save</button>
-    <a asp-action="Products">Back to list</a>
-</form>
+</div>
 

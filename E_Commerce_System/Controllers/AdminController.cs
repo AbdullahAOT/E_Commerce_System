@@ -326,7 +326,7 @@ namespace E_Commerce_System.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(Product model)
+        public async Task<IActionResult> CreateProduct(Product model, IFormFile? PhotoFile)
         {
             var adminId = HttpContext.Session.GetInt32("AdminId");
             if (adminId == null)
@@ -337,6 +337,14 @@ namespace E_Commerce_System.Controllers
             if (!ModelState.IsValid)
             {
                 return View(model);
+            }
+
+            if (PhotoFile != null && PhotoFile.Length > 0)
+            {
+                using var ms = new MemoryStream();
+                await PhotoFile.CopyToAsync(ms);
+                model.Photo = ms.ToArray();
+                model.PhotoContentType = PhotoFile.ContentType;
             }
 
             model.Server_DateTime = DateTime.Now;
@@ -386,7 +394,7 @@ namespace E_Commerce_System.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditProduct(Product model)
+        public async Task<IActionResult> EditProduct(Product model, IFormFile? PhotoFile)
         {
             var adminId = HttpContext.Session.GetInt32("AdminId");
             if (adminId == null)
@@ -420,6 +428,15 @@ namespace E_Commerce_System.Controllers
             existingProduct.Status = model.Status;
             existingProduct.Amount = model.Amount;
             existingProduct.Currency = model.Currency;
+
+            if (PhotoFile != null && PhotoFile.Length > 0)
+            {
+                using var ms = new MemoryStream();
+                await PhotoFile.CopyToAsync(ms);
+                existingProduct.Photo = ms.ToArray();
+                existingProduct.PhotoContentType = PhotoFile.ContentType;
+            }
+
             existingProduct.Update_DateTime_UTC = DateTime.UtcNow;
 
             var putResponse = await client.PutAsJsonAsync($"api/Products/{existingProduct.Id}", existingProduct);
